@@ -1,13 +1,14 @@
-from document_parser import document_parsing
 from vectordb import MilvusDB
 from rag import Rag_pipeline
 from dotenv import load_dotenv
 import os
+from document_parser import Docling,pdfPlumber
+load_dotenv()
 
 if __name__ == "__main__":
-    
+    parser = pdfPlumber()
     ###### PDF parsing Block ##############
-    parsed_document= document_parsing(
+    parsed_document= parser.document_parsing(
         "박태정_Cv.pdf",
         1000,
         10)
@@ -16,13 +17,13 @@ if __name__ == "__main__":
     ##### Embedding and Vector Store Block ######
     vectorDB =MilvusDB(
         os.getenv("EMBED_MODEL"),
+        os.getenv("RERANKER_MODEL"),
         os.getenv("DB_ADDRESS"))
     vectorDB.insert_vector_store(parsed_document)
     #############################################
 
 
     ###### Reranking and Retriever Block ######
-    #내일 학습 해야하는 것 
     rag = Rag_pipeline()
     ###########################################
 
