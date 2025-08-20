@@ -1,6 +1,6 @@
 # RAG Pipeline Lab
 
-모듈화된 RAG(Retrieval-Augmented Generation) 시스템 실험을 위한 연구용 프로젝트입니다.
+RAG 시스템 실험을 위한 기능별 모듈화한 레포지토리입니다. 
 
 ## 🏗️ 시스템 구조도
 
@@ -178,19 +178,3 @@ class NewVectorDB:
         # 삽입 로직
         pass
 ```
-
-## 🤝 기여하기
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## 📝 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 배포됩니다.
-
-## 📞 문의
-
-프로젝트에 대한 문의사항이 있으시면 이슈를 생성해주세요.

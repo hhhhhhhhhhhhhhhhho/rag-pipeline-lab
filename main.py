@@ -1,5 +1,5 @@
-from vectordb import MilvusDB
-from rag import Rag_pipeline
+from src/vectordb import MilvusDB
+from src/rag import Rag_pipeline
 from dotenv import load_dotenv
 import os
 from document_parser import Docling,pdfPlumber
