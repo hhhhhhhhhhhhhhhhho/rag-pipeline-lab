@@ -30,4 +30,4 @@ class Rag_pipeline():
 
             RAG_PROMPT = PromptTemplate.from_template(RAG_PROMPT_TEMPLATE)
 
-       
+        
