@@ -49,7 +49,7 @@ class pdfPlumber(Document):
         self.tokenizer="BAAI/bge-m3"
 
     
-    def document_parsing(self,file_path,chunk_size,overlap):
+    def document_parsing(self,file_path,chunk_size=100,overlap=10):
         import pdfplumber
         from langchain.schema import Document
 

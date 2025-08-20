@@ -3,11 +3,29 @@ from langfuse import Langfuse
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_milvus import Milvus
 from dotenv import load_dotenv
+from abc import ABC, abstractmethod
 import os
-class MilvusDB():
+from document_parser import pdfPlumber
+
+class VectorDB(ABC):
+    def __init__(self):
+        self.vector_store = None
+        self.embedding_model = None
+        self.reranker_model = None
+        self.db_address = None
+        self.is_localDB = False
+        self.db_name = None
+        
+    @abstractmethod
+    def insert_vector_store(self,document):
+        pass
+    
+
+class MilvusDB(VectorDB):
     def __init__(self,EMBED_MODEL_ID,RERANKER_MODEL,DB_ADDRESS):
         self.reranker_model = RERANKER_MODEL
         self.db_address = DB_ADDRESS
+        self.is_localDB = False
         #self.langfuse_handler = CallbackHandler()
         #self.langfuse = Langfuse()
         self.embedding_model = HuggingFaceEmbeddings(
@@ -47,49 +65,13 @@ class MilvusDB():
         except Exception:
             raise(Exception)
 
-    def searching_vector_store_aka_retriever(self):
-
-        from langchain_huggingface import HuggingFaceEndpoint
-        from langchain.retrievers import ContextualCompressionRetriever
-        from langchain.retrievers.document_compressors.cross_encoder_rerank import CrossEncoderReranker
-        from langchain_community.cross_encoders import HuggingFaceCrossEncoder
-
-        base_retriever = self.vector_store.as_retriever(search_kwargs={"k":5})
-        print(f"모델을 호출합니다.. {self.reranker_model}")
-        print("="*40)
-        re_ranker = CrossEncoderReranker(
-            model = HuggingFaceCrossEncoder(model_name=self.reranker_model, model_kwargs={"trust_remote_code":True}),
-                top_n = 3,
-        )
-        print("="*40)
-        print(f"모델을 정상적으로 불러왔습니다. {self.reranker_model}")
-        print("="*40)
-        cross_encoder_rerank_retiever = ContextualCompressionRetriever(           
-            base_compressor=re_ranker,
-            base_retriever = base_retriever,
-        )
-#        retrieved_docs = cross_encoder_rerank_retiever.invoke("박태정에 대해 설명하세요.")
-    
-
-        try:
-            retrieved_docs = cross_encoder_rerank_retiever.invoke("박태정에 대해 설명하세요.")
-        except Exception as e:
-            print(f"An error occurred during retrieval: {e}")
-            import traceback
-            traceback.print_exc() # This will print the full stack trace
-
-        for doc in retrieved_docs:
-            print(doc.page_content)
-            print(doc.metadata)
-            print("="*50)
-        return 
-    
     
 
 if __name__ =="__main__":
     load_dotenv()
     milDB = MilvusDB(os.getenv("EMBED_MODEL"),os.getenv("RERANKER_MODEL"),os.getenv("DB_ADDRESS"))
-    #milDB.insert_vector_store("2501.17887v1.pdf")
+    parser = pdfPlumber().document_parsing("박태정_Cv.pdf")
+    milDB.insert_vector_store(parser)
     #milDB.searching_vector_store_aka_retriever()
-    milDB.searching_vector_store_aka_retriever()
+#    milDB.searching_vector_store_aka_retriever()
         
